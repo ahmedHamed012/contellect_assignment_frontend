@@ -209,3 +209,8 @@ img {
     }
   }
 }
+.input-field-error {
+  border: 2px solid var(--color-red);
+  background: var(--color-red);
+  color: var(--color-white);
+}

@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,12 +17,15 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class LoginComponent {
   // Dependencies
-  constructor(private readonly fb: FormBuilder) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly authService: AuthService
+  ) {}
 
   public emptyFieldsAlert: boolean = false;
   public loginForm = this.fb.group({
-    username: [''],
-    password: [''],
+    username: ['', Validators.required],
+    password: ['', Validators.required],
   });
 
   public login(): void {
@@ -26,5 +35,14 @@ export class LoginComponent {
       this.emptyFieldsAlert = true;
       return;
     }
+
+    this.authService.login(username, password).subscribe({
+      next: (response) => {
+        console.log('Login successful', response);
+      },
+      error: (error) => {
+        console.error('Login failed', error);
+      },
+    });
   }
 }
