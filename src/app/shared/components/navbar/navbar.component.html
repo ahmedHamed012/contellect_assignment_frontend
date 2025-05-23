@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center w-100">
+      <div class="brand-name col">
+        <a class="navbar-brand" href="#"><span>Dash</span>board</a>
+      </div>
+      <div
+        class="active-user-info col d-flex align-items-center justify-content-end"
+      >
+        <p-avatar
+          icon="pi pi-user"
+          class="mr-2"
+          size="large"
+          [style]="{ 'background-color': '#ece9fc', color: '#2a1261' }"
+          shape="circle"
+        />
+        <span class="px-4"> Username</span>
+        <p-button label="Sign out" severity="danger" icon="pi pi-sign-out" />
+      </div>
+    </div>
+  </div>
+</nav>

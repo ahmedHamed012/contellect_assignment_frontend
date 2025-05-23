@@ -1,0 +1,28 @@
+@import "../../../../styles.scss";
+nav.navbar {
+  background-color: white;
+  a.navbar-brand {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.103);
+    font-family: var(--fontMain);
+    span {
+      color: #4d78fb;
+    }
+  }
+}
+
+::ng-deep {
+  nav {
+    p-button {
+      button {
+        span.p-button-label {
+          font-size: 0.9rem;
+          color: var(--color-white);
+        }
+        span.pi-sign-out.p-button-icon {
+          color: var(--color-white);
+        }
+      }
+    }
+  }
+}
