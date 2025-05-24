@@ -1,1 +1,77 @@
-<p>create-contact works!</p>
+<div class="container mt-4">
+  <h2>Create New Contact</h2>
+  <form [formGroup]="contactForm" (ngSubmit)="createNewContact()" class="mt-3">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        formControlName="name"
+        [ngClass]="{ 'is-invalid': submitted && formControls['name'].errors }"
+      />
+      <div
+        *ngIf="submitted && formControls['name'].errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="formControls['name'].errors['required']">
+          Name is required
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input
+        type="tel"
+        class="form-control"
+        id="phone"
+        formControlName="phone"
+        [ngClass]="{ 'is-invalid': submitted && formControls['phone'].errors }"
+      />
+      <div
+        *ngIf="submitted && formControls['phone'].errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="formControls['phone'].errors['required']">
+          Phone number is required
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="address" class="form-label">Address</label>
+      <textarea
+        class="form-control"
+        id="address"
+        formControlName="address"
+        rows="3"
+        [ngClass]="{
+          'is-invalid': submitted && formControls['address'].errors
+        }"
+      >
+      </textarea>
+      <div
+        *ngIf="submitted && formControls['address'].errors"
+        class="invalid-feedback"
+      >
+        <div *ngIf="formControls['address'].errors['required']">
+          Address is required
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="notes" class="form-label">Notes</label>
+      <textarea
+        class="form-control"
+        id="notes"
+        formControlName="notes"
+        rows="3"
+      >
+      </textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Contact</button>
+  </form>
+</div>

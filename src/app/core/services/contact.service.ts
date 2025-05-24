@@ -13,18 +13,14 @@ export class ContactService {
   private readonly _baseUrl = environment.api_url + '/contacts';
 
   /**
-   * Updates a contact by id on the server.
+   * Creates a new contact by sending a POST request to the backend API.
    *
-   * @param {IContact} updatedContact - The contact to update.
-   * @returns {Observable<any>} An observable containing the updated contact.
+   * @param contact - The contact object conforming to the `IContact` interface to be created.
+   * @returns An `Observable<any>` that emits the server's response upon successful creation of the contact.
    */
-  public updateContact(updatedContact: IContact): Observable<any> {
-    return this._http.patch(
-      `${this._baseUrl}/${updatedContact._id}`,
-      updatedContact
-    );
+  public createContact(contact: IContact): Observable<any> {
+    return this._http.post(this._baseUrl, contact);
   }
-
   //-----------------------------------------------------------------------------------------------------
   /**
    * Retrieves a paginated list of contacts from the server.
@@ -55,7 +51,29 @@ export class ContactService {
     });
   }
   //-----------------------------------------------------------------------------------------------------
+
+  /**
+   * Updates a contact by id on the server.
+   *
+   * @param {IContact} updatedContact - The contact to update.
+   * @returns {Observable<any>} An observable containing the updated contact.
+   */
+  public updateContact(updatedContact: IContact): Observable<any> {
+    return this._http.patch(
+      `${this._baseUrl}/${updatedContact._id}`,
+      updatedContact
+    );
+  }
+
+  //-----------------------------------------------------------------------------------------------------
+  /**
+   * Deletes a contact by its unique identifier.
+   *
+   * @param contactId - The unique identifier of the contact to be deleted.
+   * @returns An Observable that emits the server's response upon deletion.
+   */
   public deleteContact(contactId: string): Observable<any> {
     return this._http.delete(`${this._baseUrl}/${contactId}`);
   }
+  //-----------------------------------------------------------------------------------------------------
 }

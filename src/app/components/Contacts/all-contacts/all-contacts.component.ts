@@ -17,6 +17,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SocketService } from '../../../core/services/socket.service';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { CreateContactComponent } from '../create-contact/create-contact.component';
 @Component({
   selector: 'app-all-contacts',
   standalone: true,
@@ -35,6 +36,7 @@ import { DialogModule } from 'primeng/dialog';
     InputIconModule,
     MultiSelectModule,
     DialogModule,
+    CreateContactComponent,
   ],
   templateUrl: './all-contacts.component.html',
   styleUrl: './all-contacts.component.scss',
@@ -54,6 +56,7 @@ export class AllContactsComponent {
   lockedContacts: Record<string, boolean> = {};
   contactsCount: number | string = 0;
   deletePopUpAlertState: boolean = false;
+  createContactDialogState: boolean = false;
   deletedContactData: any = {};
   contactUpdateForm = this.fb.group({
     name: [''],
