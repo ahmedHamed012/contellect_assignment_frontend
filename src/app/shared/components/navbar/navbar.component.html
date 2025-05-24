@@ -8,14 +8,19 @@
         class="active-user-info col d-flex align-items-center justify-content-end"
       >
         <p-avatar
-          icon="pi pi-user"
+          [label]="username?.charAt(0)?.toUpperCase()"
           class="mr-2"
           size="large"
           [style]="{ 'background-color': '#ece9fc', color: '#2a1261' }"
           shape="circle"
         />
-        <span class="px-4"> Username</span>
-        <p-button label="Sign out" severity="danger" icon="pi pi-sign-out" />
+        <span class="px-4"> {{ username }}</span>
+        <p-button
+          label="Sign out"
+          severity="danger"
+          icon="pi pi-sign-out"
+          (onClick)="logout()"
+        />
       </div>
     </div>
   </div>
