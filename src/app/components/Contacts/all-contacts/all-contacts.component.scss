@@ -122,3 +122,14 @@ p.user-mail {
     height: 80%;
   }
 }
+
+button.alert-btn {
+  background-color: transparent;
+  border: none;
+  &:first-child {
+    color: #4c77fc;
+  }
+  &:last-child {
+    color: #f44336;
+  }
+}

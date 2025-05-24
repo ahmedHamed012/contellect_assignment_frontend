@@ -15,6 +15,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SocketService } from '../../../core/services/socket.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-all-contacts',
   standalone: true,
@@ -32,6 +34,7 @@ import { SocketService } from '../../../core/services/socket.service';
     InputTextModule,
     InputIconModule,
     MultiSelectModule,
+    DialogModule,
   ],
   templateUrl: './all-contacts.component.html',
   styleUrl: './all-contacts.component.scss',
@@ -50,6 +53,8 @@ export class AllContactsComponent {
   editingContactId: string | null = null;
   lockedContacts: Record<string, boolean> = {};
   contactsCount: number | string = 0;
+  deletePopUpAlertState: boolean = false;
+  deletedContactData: any = {};
   contactUpdateForm = this.fb.group({
     name: [''],
     phone: [''],
@@ -92,7 +97,28 @@ export class AllContactsComponent {
   }
   //----------------------------------------------------------------------------------------------------
 
-  deleteContact(contact: IContact) {}
+  deleteContact(contactId: string) {
+    if (this.lockedContacts[contactId]) {
+      alert('This contact is being edited by another user.');
+      return;
+    }
+    console.log('Deleting contact:', contactId);
+    this.contactService.deleteContact(contactId).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Contact Deleted',
+          detail: response.message || 'Contact deleted successfully',
+        });
+        this.deletePopUpAlertState = false;
+        this.deletedContactData['name'] = '';
+        this.ngOnInit();
+      },
+      error: (error) => {
+        console.error('Error deleting contact:', error);
+      },
+    });
+  }
   //----------------------------------------------------------------------------------------------------
 
   acceptEdit() {
@@ -129,6 +155,12 @@ export class AllContactsComponent {
       this.socketService.unlockContact(this.editingContactId);
       this.editingContactId = null;
     }
+  }
+  //----------------------------------------------------------------------------------------------------
+  popUpDeleteAlert(contactName: string, contactId: string) {
+    this.deletePopUpAlertState = true;
+    this.deletedContactData['name'] = contactName;
+    this.deletedContactData['contactId'] = contactId;
   }
   //----------------------------------------------------------------------------------------------------
 

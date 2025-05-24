@@ -132,7 +132,7 @@
                   </button>
                   <button
                     class="btn btn-sm btn-danger"
-                    (click)="deleteContact(contact._id)"
+                    (click)="popUpDeleteAlert(contact.name, contact._id)"
                   >
                     <i class="pi pi-trash px-2"></i>Delete
                   </button>
@@ -165,3 +165,31 @@
     />
   </div>
 </div>
+<p-dialog
+  header="Confirmation"
+  [modal]="true"
+  [(visible)]="deletePopUpAlertState"
+  [style]="{ width: '25rem' }"
+>
+  <div class="flex items-center gap-4 mb-4">
+    <p>
+      You sure that you want to delete this contact :
+      {{ deletedContactData["name"] }}
+    </p>
+  </div>
+  <div class="flex justify-end gap-2">
+    <button
+      severity="secondary"
+      (click)="deletePopUpAlertState = false"
+      class="alert-btn"
+    >
+      Cancel
+    </button>
+    <button
+      (click)="deleteContact(deletedContactData['contactId'])"
+      class="alert-btn"
+    >
+      Ok
+    </button>
+  </div>
+</p-dialog>

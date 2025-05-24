@@ -54,4 +54,8 @@ export class ContactService {
       },
     });
   }
+  //-----------------------------------------------------------------------------------------------------
+  public deleteContact(contactId: string): Observable<any> {
+    return this._http.delete(`${this._baseUrl}/${contactId}`);
+  }
 }
