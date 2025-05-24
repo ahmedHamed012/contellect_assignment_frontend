@@ -1,5 +1,4 @@
-import { Route, Routes } from '@angular/router';
-import { HomeComponent } from './components/Home/home.component';
+import { Route } from '@angular/router';
 
 export const routes: Route[] = [
   {
@@ -9,7 +8,8 @@ export const routes: Route[] = [
   },
   {
     path: 'home',
-    component: HomeComponent,
+    loadChildren: () =>
+      import('./components/Home/home.routes').then((m) => m.HomeRoutes),
   },
   {
     path: 'auth',
