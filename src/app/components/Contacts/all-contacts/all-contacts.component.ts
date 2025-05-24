@@ -14,6 +14,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SocketService } from '../../../core/services/socket.service';
 @Component({
   selector: 'app-all-contacts',
   standalone: true,
@@ -39,13 +40,15 @@ export class AllContactsComponent {
   constructor(
     private readonly contactService: ContactService,
     private readonly fb: FormBuilder,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly socketService: SocketService
   ) {}
 
   public contactsArray!: Array<IContact>;
   first: number = 0;
   rows: number = 5;
   editingContactId: string | null = null;
+  lockedContacts: Record<string, boolean> = {};
   contactsCount: number | string = 0;
   contactUpdateForm = this.fb.group({
     name: [''],
@@ -56,6 +59,9 @@ export class AllContactsComponent {
   //----------------------------------------------------------------------------------------------------
 
   ngOnInit() {
+    this.socketService.lockedContacts$.subscribe((locks) => {
+      this.lockedContacts = locks;
+    });
     this.contactService.getAllContactsPaginated().subscribe({
       next: (response) => {
         const { total, data } = response;
@@ -70,7 +76,12 @@ export class AllContactsComponent {
   //----------------------------------------------------------------------------------------------------
 
   editContact(contact: IContact) {
-    this.editingContactId = contact._id || null;
+    if (this.lockedContacts[contact._id ?? '']) {
+      alert('This contact is being edited by another user.');
+      return;
+    }
+    this.editingContactId = contact._id ?? null;
+    this.socketService.lockContact(contact._id ?? '');
 
     this.contactUpdateForm.patchValue({
       name: contact.name,
@@ -89,7 +100,7 @@ export class AllContactsComponent {
 
     if (this.editingContactId) {
       const updatedContact: IContact = {
-        _id: this.editingContactId,
+        _id: this.editingContactId ?? '',
         name: formValue.name ?? '',
         phone: formValue.phone ?? '',
         address: formValue.address ?? '',
@@ -114,7 +125,10 @@ export class AllContactsComponent {
   }
   //----------------------------------------------------------------------------------------------------
   cancelEdit() {
-    this.editingContactId = null;
+    if (this.editingContactId) {
+      this.socketService.unlockContact(this.editingContactId);
+      this.editingContactId = null;
+    }
   }
   //----------------------------------------------------------------------------------------------------
 
