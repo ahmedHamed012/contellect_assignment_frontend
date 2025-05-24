@@ -214,3 +214,8 @@ img {
   background: var(--color-red);
   color: var(--color-white);
 }
+::ng-deep {
+  div.p-toast-detail {
+    color: inherit !important;
+  }
+}

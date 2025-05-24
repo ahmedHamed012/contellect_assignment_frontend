@@ -7,11 +7,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ToastModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -19,7 +22,9 @@ export class LoginComponent {
   // Dependencies
   constructor(
     private readonly fb: FormBuilder,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly messageService: MessageService
   ) {}
 
   public emptyFieldsAlert: boolean = false;
@@ -33,15 +38,26 @@ export class LoginComponent {
 
     if (!username || !password) {
       this.emptyFieldsAlert = true;
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Please fill in all fields.',
+      });
       return;
     }
 
     this.authService.login(username, password).subscribe({
       next: (response) => {
-        console.log('Login successful', response);
+        this.router.navigate(['/home']);
+        // Store the token in local storage or a service
+        localStorage.setItem('contellect_token', response['data'].token);
       },
       error: (error) => {
-        console.error('Login failed', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
       },
     });
   }
