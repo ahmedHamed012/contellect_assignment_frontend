@@ -19,14 +19,10 @@ export class NavbarComponent {
   public token: string | null = localStorage.getItem('contellect_token');
 
   ngOnInit() {
-    // Check if the token is present in local storage
     if (this.token) {
       // Decode the token to get the username
       const payload: any = jwtDecode(this.token);
       this.username = payload.username;
-    } else {
-      // If no token, redirect to login page
-      this.router.navigate(['/auth/login']);
     }
   }
 
