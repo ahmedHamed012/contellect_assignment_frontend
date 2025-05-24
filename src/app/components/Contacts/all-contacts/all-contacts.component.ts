@@ -44,26 +44,30 @@ export class AllContactsComponent {
 
   public contactsArray!: Array<IContact>;
   first: number = 0;
-  rows: number = 10;
+  rows: number = 5;
   editingContactId: string | null = null;
-
+  contactsCount: number | string = 0;
   contactUpdateForm = this.fb.group({
     name: [''],
     phone: [''],
     address: [''],
     notes: [''],
   });
+  //----------------------------------------------------------------------------------------------------
 
   ngOnInit() {
     this.contactService.getAllContactsPaginated().subscribe({
       next: (response) => {
-        this.contactsArray = response.data;
+        const { total, data } = response;
+        this.contactsArray = data;
+        this.contactsCount = total;
       },
       error: (error) => {
         console.error('Error fetching contacts:', error);
       },
     });
   }
+  //----------------------------------------------------------------------------------------------------
 
   editContact(contact: IContact) {
     this.editingContactId = contact._id || null;
@@ -75,8 +79,11 @@ export class AllContactsComponent {
       notes: contact.notes,
     });
   }
+  //----------------------------------------------------------------------------------------------------
 
   deleteContact(contact: IContact) {}
+  //----------------------------------------------------------------------------------------------------
+
   acceptEdit() {
     const formValue = this.contactUpdateForm.value;
 
@@ -94,7 +101,7 @@ export class AllContactsComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Contact Updated',
-            detail: 'The contact has been successfully updated.',
+            detail: response.message || 'Contact updated successfully',
           });
           this.ngOnInit(); // Refresh the contact list
           this.cancelEdit();
@@ -105,12 +112,26 @@ export class AllContactsComponent {
       });
     }
   }
+  //----------------------------------------------------------------------------------------------------
   cancelEdit() {
     this.editingContactId = null;
   }
+  //----------------------------------------------------------------------------------------------------
 
   onPageChange(event: any) {
+    const pageNumber = event.page + 1;
     this.first = event.first;
     this.rows = event.rows;
+
+    this.contactService.getAllContactsPaginated(pageNumber).subscribe({
+      next: (response) => {
+        const { total, data } = response;
+        this.contactsArray = data;
+        this.contactsCount = total;
+      },
+      error: (error) => {
+        console.error('Error fetching contacts:', error);
+      },
+    });
   }
 }
